@@ -6,7 +6,7 @@ import type {
   MAYBE_ERROR_TYPE,
   ID_TYPE,
 } from '../types/common';
-
+import { arrayMove } from './utils';
 
 type ByIdConfigurationType = {
   added?: Array<string>,
@@ -21,6 +21,7 @@ type ByIdConfigurationType = {
   defaultAttributes?: Object,
   idKey?: string,
   cascade?: {[string]: string},
+  cleared?: Array<string>,
   customBehavior?: (Object, Object) => Object, // state, action => newState
 };
 
@@ -34,7 +35,7 @@ type ByIdActionType = {
     newId?: ID_TYPE,
     key?: string,
     oldValues?: any,
-    newValues?: any
+    newValues?: any,
   }
 };
 
@@ -45,6 +46,7 @@ type OrderConfigurationType = {
   removed?: Array<string>,
   confirmed?: Array<string>,
   cleared?: Array<string>,
+  sorted?: Array<string>,
   idKey?: string,
   preferPrepend?: boolean,
 };
@@ -57,91 +59,106 @@ type OrderActionType = {
     order?: Array<ID_TYPE>,
     oldId?: ID_TYPE,
     newId?: ID_TYPE,
+    oldIndex?: number,
+    newIndex?: number,
   }
-}
+};
 
 type FetchingConfigurationType = {
   started?: Array<string>,
   succeed?: Array<string>,
   idKey?: string,
-  failed?: Array<string>
+  failed?: Array<string>,
 };
 
 type FetchingActionType = {
   type: string,
   payload: ID_TYPE | {
     id?: ID_TYPE,
-    object_id?: ID_TYPE
-  }
+    objectId?: ID_TYPE,
+  },
 };
 
 type IsFetchingConfigurationType = {
   started?: Array<string>,
   succeed?: Array<string>,
-  failed?: Array<string>
+  failed?: Array<string>,
 };
 
 type IsFetchingActionType = {
-  type: string
+  type: string,
 };
 
 type ErrorConfigurationType = {
   clear: Array<string>,
-  populate: Array<string>
+  populate: Array<string>,
 };
 
 type ErrorActionType = {
   type: string,
-  payload: ERROR_TYPE
+  payload: ERROR_TYPE,
 };
 
 type ErrorsConfigurationType = {
   clear?: Array<string>,
   idKey?: string,
-  populate?: Array<string>
+  populate?: Array<string>,
 };
 
 type ErrorsActionType = {
   type: string,
   payload: {
     id: ID_TYPE,
-    object_id: ID_TYPE
+    objectId: ID_TYPE,
   }
 };
 
 type ToggleConfigurationType = {
   turnedOn?: Array<string>,
   turnedOff?: Array<string>,
-  default: boolean
+  default: boolean,
 };
 
 type MuxConfigurationType = {
   selected?: Array<string>,
   allDeselected?: Array<string>,
-  default: ID_TYPE
+  default: ID_TYPE,
 };
 
 type CounterConfigurationType = {
   incremented?: Array<string>,
   decremented?: Array<string>,
-  reset?: Array<string>
+  reset?: Array<string>,
 };
 
 type CounterActionType = {
   type: string,
   payload: {
-    step: number
-  }
+    step: number,
+  },
 };
 
 type SingletonConfigurationType = {
   clear: Array<string>,
-  populate: Array<string>
+  populate: Array<string>,
+  update: Array<string>,
 };
 
 type SingletonActionType = {
   type: string,
-  payload: Object
+  payload: Object,
+};
+
+type TimestampConfigurationType = {
+  clear: Array<string>,
+  set: Array<string>,
+  timestampKey?: string,
+  default: number,
+};
+
+type TimestampActionType = {
+  type: string,
+  payload: Object | number,
 };
 
 
@@ -161,6 +178,7 @@ export const byId = (configuration: ByIdConfigurationType) => (
     replacedInArrayAttribute,
     defaultAttributes,
     cascade,
+    cleared,
     idKey = 'id',
     customBehavior = (s, _a) => s, // Identity reducer
   } = configuration;
@@ -223,6 +241,24 @@ export const byId = (configuration: ByIdConfigurationType) => (
         });
 
         return newState;
+      } else if (
+        typeof payload === 'object' &&
+          typeof payload.entities === 'object'
+      ) {
+        const newState = {
+          ...state,
+        };
+
+        Object.keys(payload.entities).forEach(id => {
+          if (state[id] && payload.entities) {
+            newState[id] = {
+              ...state[id],
+              ...payload.entities[id],
+            };
+          }
+        });
+
+        return newState;
       }
     }
 
@@ -236,7 +272,7 @@ export const byId = (configuration: ByIdConfigurationType) => (
             ...(defaultAttributes || {}),
             ...(payload.entities || {})[
               Number.isNaN(id) ? id : parseInt(id, 10)
-            ], // TODO: handle server side returned string ids
+            ],
             isConfirmed: true,
           };
         });
@@ -382,6 +418,10 @@ export const byId = (configuration: ByIdConfigurationType) => (
         }
       }
     }
+
+    if (cleared != null && cleared.includes(action.type)) {
+      return {};
+    }
   }
 
   return customBehavior(state, action);
@@ -398,6 +438,7 @@ export const order = (configuration: OrderConfigurationType) => (
     removed,
     confirmed,
     cleared,
+    sorted,
     idKey = 'id',
     preferPrepend = false,
   } = configuration;
@@ -483,6 +524,18 @@ export const order = (configuration: OrderConfigurationType) => (
     return [];
   }
 
+  if (sorted != null && sorted.includes(action.type)) {
+    if (typeof payload === 'object') {
+      const { oldIndex, newIndex } = payload;
+      if (
+        (typeof oldIndex === 'number')
+        && (typeof newIndex === 'number')
+      ) {
+        return arrayMove(state, oldIndex, newIndex);
+      }
+    }
+  }
+
   return state;
 };
 
@@ -524,10 +577,10 @@ export const errors = (configuration: ErrorsConfigurationType) => (
   const { clear, populate, idKey = 'id' } = configuration;
   const { payload } = action;
   if (populate != null && populate.includes(action.type)) {
-    if (typeof payload.object_id === 'number') {
+    if (typeof payload.objectId === 'number') {
       return {
         ...state,
-        [payload.object_id]: action.payload,
+        [payload.objectId]: action.payload,
       };
     }
 
@@ -585,8 +638,9 @@ export const fetching = (configuration: FetchingConfigurationType) => (
     if (
       payload !== null
       && typeof payload === 'object'
-      && typeof payload.object_id === 'number') {
-      return state.filter(id => id !== payload.object_id);
+      && typeof payload.objectId === 'number') {
+      // $FlowFixMe
+      return state.filter(id => id != payload.objectId);
     }
 
     return state;
@@ -602,9 +656,11 @@ export const fetching = (configuration: FetchingConfigurationType) => (
           || typeof payload[idKey] === 'string'
       )
     ) {
-      return state.filter(id => id !== payload[idKey]);
+      // $FlowFixMe
+      return state.filter(id => id != payload[idKey]);
     } if (typeof payload === 'number' || typeof payload === 'string') {
-      return state.filter(id => id !== payload);
+      // $FlowFixMe
+      return state.filter(id => id != payload);
     }
 
     return state;
@@ -690,7 +746,7 @@ export const singleton = (configuration: SingletonConfigurationType) => (
   state: ?Object = null,
   action: SingletonActionType,
 ): ?Object => {
-  const { clear, populate } = configuration;
+  const { clear, populate, update } = configuration;
   if (clear != null && clear.includes(action.type)) {
     return null;
   }
@@ -699,8 +755,16 @@ export const singleton = (configuration: SingletonConfigurationType) => (
     return action.payload;
   }
 
+  if (update != null && update.includes(action.type)) {
+    return {
+      ...state,
+      ...action.payload,
+    };
+  }
+
   return state;
 };
+
 
 export const timestamp = (configuration: TimestampConfigurationType) => (
   state: number = configuration.default,
@@ -724,6 +788,7 @@ export const timestamp = (configuration: TimestampConfigurationType) => (
 
   return state;
 };
+
 
 export const withReplaceSubState = (reducer: Function) =>
   (replaceActionTypes: Array<string>)  =>
