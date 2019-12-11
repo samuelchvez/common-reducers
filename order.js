@@ -18,8 +18,6 @@ type OrderConfigurationType = {
 type OrderActionType = {
   type: string,
   payload: ID_TYPE | {
-    id?: ID_TYPE,
-    entities?: {[ID_TYPE]: Object},
     order?: Array<ID_TYPE>,
     oldId?: ID_TYPE,
     newId?: ID_TYPE,

@@ -1,32 +1,35 @@
+// @flow
 import byId from './byId';
-import order from './order';
 import counter from './counter';
+import error from './error';
 import errors  from './errors ';
 import fetching from './fetching';
 import isFetching from './isFetching';
-import error from './error';
-import toggle from './toggle';
-import mux from './mux';
-import singleton from './singleton';
+import order from './order';
 import orderById from './orderById';
+import selected from './selected';
+import singleton from './singleton';
+import substateMultiplexer from './substateMultiplexer';
 import timestamp from './timestamp';
+import toggle from './toggle';
 import withReplaceSubState from './withReplaceSubState';
 import withResetState from './withResetState';
 
 
 export {
   byId,
-  order,
   counter,
+  error,
   errors,
   fetching,
   isFetching,
-  error,
-  toggle,
-  mux,
-  singleton,
+  order,
   orderById,
+  selected,
+  singleton,
+  substateMultiplexer,
   timestamp,
+  toggle,
   withReplaceSubState,
   withResetState,
 };
