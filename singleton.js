@@ -1,3 +1,15 @@
+// @flow
+
+type SingletonConfigurationType = {
+  clear: Array<string>,
+  populate: Array<string>,
+  update: Array<string>,
+};
+
+type SingletonActionType = {
+  type: string,
+  payload: Object,
+};
 
 
 const singleton = (configuration: SingletonConfigurationType) => (
@@ -23,13 +35,5 @@ const singleton = (configuration: SingletonConfigurationType) => (
   return state;
 };
 
-type SingletonConfigurationType = {
-  clear: Array<string>,
-  populate: Array<string>,
-  update: Array<string>,
-};
 
-type SingletonActionType = {
-  type: string,
-  payload: Object,
-};
+export default singleton;

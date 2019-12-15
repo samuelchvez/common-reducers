@@ -54,4 +54,5 @@ const orderById = (configuration: OrderByIdConfigurationType) => (
   return state;
 };
 
+
 export default orderById;

@@ -1,5 +1,5 @@
 // @flow
-import { ID_TYPE, GENERIC_ACTION_TYPE } from './types';
+import { GENERIC_ACTION_TYPE } from './types';
 
 
 type ToggleConfigurationType = {

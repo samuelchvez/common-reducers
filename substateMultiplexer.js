@@ -94,3 +94,6 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     };
   };
 };
+
+
+export default substateMultiplexer;

@@ -137,3 +137,6 @@ const order = (configuration: OrderConfigurationType) => (
 
   return state;
 };
+
+
+export default order;
