@@ -3,7 +3,7 @@
 type KeyExtractorByIdConfigurationType = {
   clear: Array<string>,
   set: Array<string>,
-  keyExtractorKey: string,
+  extractionKey: string,
   idKey?: string,
   default: mixed,
 };
@@ -20,7 +20,7 @@ const keyExtractorById = (configuration: KeyExtractorByIdConfigurationType) => (
   const {
     clear,
     set,
-    keyExtractorKey,
+    extractionKey,
     idKey = 'id',
   } = configuration;
   if (clear != null && clear.includes(action.type)) {
@@ -34,7 +34,7 @@ const keyExtractorById = (configuration: KeyExtractorByIdConfigurationType) => (
     const { payload } = action;
     return {
       ...state,
-      [payload[idKey]]: payload[keyExtractorKey],
+      [payload[idKey]]: payload[extractionKey],
     };
   }
 
