@@ -15,7 +15,7 @@ type SubstateMultiplexerConfigurationType =
 
 type SubstateMultiplexerActionType = OrderActionType;
 
-type SubstateMultiplexerStateType = {
+export type SubstateMultiplexerStateType = {
   order: Array<ID_TYPE>,
   selected: ?ID_TYPE,
   substates: Object,
