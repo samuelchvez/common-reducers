@@ -56,6 +56,34 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     const { substates } = state;
     const { order, selected } = orderAndSelectedReducer(state, action);
 
+    // Select the first one if just added one and there was anything selected
+    if (
+        (
+          configuration.added.includes(action.type) ||
+          configuration.fetched.includes(action.type)
+        ) &&
+        order.length > 0 &&
+        selected === null
+      ) {
+      selected = order[0];
+    }
+
+    // Re-select if removed the one that is currently selected
+    if (
+      configuration.removed.includes(action.type) &&
+      selected !== null &&
+      !order.includes(selected)
+    ) {
+      // If there are another options, select the first one
+      if (order.length > 0) {
+        selected = order[0];
+
+      // Mark that nothing is selected
+      } else {
+        selected = null;
+      }
+    }
+
     return {
       order,
       selected,
