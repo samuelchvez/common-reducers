@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 import type { ID_TYPE } from './types';
 import type { OrderConfigurationType } from './order';
 import type { SelectedConfigurationType } from './selected';
-import * as common from './';
+import * as common from '.';
 
 
 type SubstateMultiplexerConfigurationType =
@@ -46,36 +46,37 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
       default: null,
     }),
   });
-  
+
   return (
     state: SubstateMultiplexerStateType = initialState,
     action: SubstateMultiplexerActionType,
   ): SubstateMultiplexerStateType => {
-
     const { substates } = state;
-    const { order, selected } = orderAndSelectedReducer(state, action);
+    const orderAndSelected = orderAndSelectedReducer(state, action);
+    const { order } = orderAndSelected;
+    let { selected } = orderAndSelected;
 
     // Select the first one if just added one and there was anything selected
     if (
-        (
-          configuration.added.includes(action.type) ||
-          configuration.fetched.includes(action.type)
-        ) &&
-        order.length > 0 &&
-        selected === null
-      ) {
-      selected = order[0];
+      (
+        configuration.added.includes(action.type)
+        || configuration.fetched.includes(action.type)
+      )
+      && order.length > 0
+      && selected === null
+    ) {
+      selected = order[0]; // eslint-disable-line prefer-destructuring
     }
 
     // Re-select if removed the one that is currently selected
     if (
-      configuration.removed.includes(action.type) &&
-      selected !== null &&
-      !order.includes(selected)
+      configuration.removed.includes(action.type)
+      && selected !== null
+      && !order.includes(selected)
     ) {
       // If there are another options, select the first one
       if (order.length > 0) {
-        selected = order[0];
+        selected = order[0]; // eslint-disable-line prefer-destructuring
 
       // Mark that nothing is selected
       } else {
@@ -88,7 +89,7 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
       selected,
       substates: selected != null ? {
         ...substates,
-        [selected]: reducer(substate[selected], action),
+        [selected]: configuration.reducer(substates[selected], action),
       } : substates,
     };
   };
@@ -98,35 +99,33 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
 export default substateMultiplexer;
 
 
-export const reselectWithMultiplexer = (selector: Function): Function =>
-  (state: SubstateMultiplexerStateType, ...args: Array<mixed>) {
-    const { selected, substates } = multiplexerState;
-    if (selected != null) {
-      if (substates[selected] != null) {
-        return selector(substates[selected], ...args);
-      } else {
-        throw 'Invalid selected substate';
-      }
+export const reselectWithMultiplexer = (selector: Function): Function => (multiplexerState: SubstateMultiplexerStateType, ...args: Array<mixed>) => {
+  const { selected, substates } = multiplexerState;
+  if (selected != null) {
+    if (substates[selected] != null) {
+      return selector(substates[selected], ...args);
     } else {
-      throw 'No substate is selected';
+      throw new Error('Invalid selected substate');
     }
-  };
+  } else {
+    throw new Error('No substate is selected');
+  }
+};
 
 export const multipleReselectsWithMultiplexer = ({
-  selectors: {},
-  excluded: [],
+  selectors = {},
+  excluded = [],
 }: {
   selectors: {[string]: Function},
   excluded: Array<string>,
 }): {[string]: Function} => {
   const wSelectors = {};
   Object.keys(selectors).filter(
-    selectorName => selectorName !== 'default' &&
-      !excluded.includes(selectorName),
-  ).forEach(
-    selectorName =>
-      wSelectors[selectorName] = reselectWithMultiplexer(selectors[selectorName]),
-  );
+    selectorName => selectorName !== 'default'
+    && !excluded.includes(selectorName),
+  ).forEach((selectorName) => {
+    wSelectors[selectorName] = reselectWithMultiplexer(selectors[selectorName]);
+  });
 
   return wSelectors;
 };
