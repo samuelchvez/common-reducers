@@ -97,3 +97,18 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
 
 
 export default substateMultiplexer;
+
+
+const reselectWithMultiplexer = (selector: Function): Function =>
+  (state: SubstateMultiplexerStateType, ...args: Array<mixed>) {
+    const { selected, substates } = multiplexerState;
+    if (selected != null) {
+      if (substates[selected] != null) {
+        return selector(substates[selected], ...args);
+      } else {
+        throw 'Invalid selected substate';
+      }
+    } else {
+      throw 'No substate is selected';
+    }
+  };
