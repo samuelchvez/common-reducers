@@ -99,7 +99,7 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
 export default substateMultiplexer;
 
 
-const reselectWithMultiplexer = (selector: Function): Function =>
+export const reselectWithMultiplexer = (selector: Function): Function =>
   (state: SubstateMultiplexerStateType, ...args: Array<mixed>) {
     const { selected, substates } = multiplexerState;
     if (selected != null) {
@@ -112,3 +112,22 @@ const reselectWithMultiplexer = (selector: Function): Function =>
       throw 'No substate is selected';
     }
   };
+
+export const multipleReselectsWithMultiplexer = ({
+  selectors: {},
+  excluded: [],
+}: {
+  selectors: {[string]: Function},
+  excluded: Array<string>,
+}): {[string]: Function} => {
+  const wSelectors = {};
+  Object.keys(selectors).filter(
+    selectorName => selectorName !== 'default' &&
+      !excluded.includes(selectorName),
+  ).forEach(
+    selectorName =>
+      wSelectors[selectorName] = reselectWithMultiplexer(selectors[selectorName]),
+  );
+
+  return wSelectors;
+};
