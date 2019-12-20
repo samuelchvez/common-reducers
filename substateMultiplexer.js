@@ -135,7 +135,7 @@ export const reselectWithMultiplexer = (selector: Function): Function => (multip
 
 export const multipleReselectsWithMultiplexer = ({
   selectors = {},
-  excluded = [],
+  excluded? = [],
 }: {
   selectors: {[string]: Function},
   excluded: Array<string>,
