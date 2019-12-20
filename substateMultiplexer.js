@@ -15,12 +15,14 @@ type SubstateMultiplexerConfigurationType =
 type SubstateMultiplexerActionType = OrderActionType;
 
 export type SubstateMultiplexerStateType = {
+  byId: {[ID_TYPE]: Object},
   order: Array<ID_TYPE>,
   selected: ?ID_TYPE,
   substates: Object,
 };
 
 const initialState = {
+  byId: {},
   order: [],
   selected: null,
   substates: {},
@@ -28,7 +30,14 @@ const initialState = {
 
 
 const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType) => {
-  const orderAndSelectedReducer = combineReducers({
+  const byIdOrderAndSelectedReducer = combineReducers({
+    byId: common.byId({
+      added: configuration.added,
+      fetched: configuration.fetched,
+      removed: configuration.removed,
+      cleared: configuration.cleared,
+      idKey: configuration.idKey,
+    }),
     order: common.order({
       added: configuration.added,
       fetched: configuration.fetched,
@@ -52,7 +61,7 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     action: SubstateMultiplexerActionType,
   ): SubstateMultiplexerStateType => {
     const { substates } = state;
-    const orderAndSelected = orderAndSelectedReducer(state, action);
+    const byIdOrderAndSelected = byIdOrderAndSelectedReducer(state, action);
     const { order } = orderAndSelected;
     let { selected } = orderAndSelected;
 
