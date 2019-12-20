@@ -2,18 +2,23 @@
 import { combineReducers } from 'redux';
 
 import type { ID_TYPE } from './types';
-import type {
-  OrderConfigurationType,
-  OrderActionType,
-} from './order';
-import type { SelectedConfigurationType } from './selected';
 import * as common from '.';
 
 
-type SubstateMultiplexerConfigurationType =
-  | OrderConfigurationType
-  | SelectedConfigurationType
-  | { reducer: (mixed, Object) => mixed };
+type SubstateMultiplexerConfigurationType = {
+  added?: Array<string>,
+  fetched?: Array<string>,
+  removed?: Array<string>,
+  cleared?: Array<string>,
+  replaced?: Array<string>,
+  confirmed?: Array<string>,
+  sorted?: Array<string>,
+  preferPrepend?: Array<string>,
+  allDeselected?: Array<string>,
+  selected?: Array<string>,
+  idKey?: string,
+  reducer: (mixed, Object) => mixed,
+}
 
 type SubstateMultiplexerActionType = OrderActionType;
 
@@ -71,8 +76,11 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     // Select the first one if just added one and there was anything selected
     if (
       (
-        configuration.added.includes(action.type)
-        || configuration.fetched.includes(action.type)
+        configuration.added
+        && (
+          configuration.added.includes(action.type)
+          || configuration.fetched.includes(action.type)
+        )
       )
       && order.length > 0
       && selected === null
