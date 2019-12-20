@@ -1,8 +1,8 @@
 // @flow
 
 type KeyExtractorConfigurationType = {
-  clear: Array<string>,
-  set: Array<string>,
+  clear?: Array<string>,
+  set?: Array<string>,
   extractionKey: string,
   default: number,
 };

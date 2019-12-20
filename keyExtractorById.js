@@ -1,9 +1,9 @@
 // @flow
 
 type KeyExtractorByIdConfigurationType = {
-  clear: Array<string>,
-  set: Array<string>,
-  extractionKey: string,
+  clear?: Array<string>,
+  set?: Array<string>,
+  extractionKey?: string,
   idKey?: string,
   default: mixed,
 };
