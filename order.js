@@ -3,7 +3,7 @@ import { ID_TYPE } from './types';
 import { arrayMove } from './utils';
 
 
-type OrderConfigurationType = {
+export type OrderConfigurationType = {
   added?: Array<string>,
   fetched?: Array<string>,
   replaced?: Array<string>,
@@ -15,7 +15,7 @@ type OrderConfigurationType = {
   preferPrepend?: boolean,
 };
 
-type OrderActionType = {
+export type OrderActionType = {
   type: string,
   payload: ID_TYPE | {
     order?: Array<ID_TYPE>,

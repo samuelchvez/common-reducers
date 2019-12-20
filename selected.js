@@ -2,7 +2,7 @@
 import { ID_TYPE, GENERIC_ACTION_TYPE } from './types';
 
 
-type SelectedConfigurationType = {
+export type SelectedConfigurationType = {
   selected?: Array<string>,
   allDeselected?: Array<string>,
   default: ?ID_TYPE,
