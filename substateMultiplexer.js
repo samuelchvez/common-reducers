@@ -2,6 +2,7 @@
 import { combineReducers } from 'redux';
 
 import type { ID_TYPE } from './types';
+import type { OrderActionType } from './order';
 import * as common from '.';
 
 
@@ -13,7 +14,7 @@ type SubstateMultiplexerConfigurationType = {
   replaced?: Array<string>,
   confirmed?: Array<string>,
   sorted?: Array<string>,
-  preferPrepend?: Array<string>,
+  preferPrepend?: boolean,
   allDeselected?: Array<string>,
   selected?: Array<string>,
   idKey?: string,
@@ -69,6 +70,7 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     action: SubstateMultiplexerActionType,
   ): SubstateMultiplexerStateType => {
     const { substates } = state;
+    // $FlowFixMe
     const byIdOrderAndSelected = byIdOrderAndSelectedReducer(state, action);
     const { byId, order } = byIdOrderAndSelected;
     let { selected } = byIdOrderAndSelected;
@@ -76,11 +78,8 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     // Select the first one if just added one and there was anything selected
     if (
       (
-        configuration.added
-        && (
-          configuration.added.includes(action.type)
-          || configuration.fetched.includes(action.type)
-        )
+        (configuration.added && configuration.added.includes(action.type))
+        || (configuration.fetched && configuration.fetched.includes(action.type))
       )
       && order.length > 0
       && selected === null
@@ -90,7 +89,8 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
 
     // Re-select if removed the one that is currently selected
     if (
-      configuration.removed.includes(action.type)
+      configuration.removed
+      && configuration.removed.includes(action.type)
       && selected !== null
       && !order.includes(selected)
     ) {
