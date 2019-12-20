@@ -135,10 +135,10 @@ export const reselectWithMultiplexer = (selector: Function): Function => (multip
 
 export const multipleReselectsWithMultiplexer = ({
   selectors = {},
-  excluded? = [],
+  excluded = [],
 }: {
   selectors: {[string]: Function},
-  excluded: Array<string>,
+  excluded?: Array<string>,
 }): {[string]: Function} => {
   const wSelectors = {};
   Object.keys(selectors).filter(
@@ -150,3 +150,4 @@ export const multipleReselectsWithMultiplexer = ({
 
   return wSelectors;
 };
+
