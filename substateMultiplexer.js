@@ -18,7 +18,7 @@ type SubstateMultiplexerConfigurationType = {
   allDeselected?: Array<string>,
   selected?: Array<string>,
   idKey?: string,
-  reducer: (mixed, Object) => mixed,
+  reducer: Function,
 }
 
 type SubstateMultiplexerActionType = OrderActionType;
@@ -150,4 +150,3 @@ export const multipleReselectsWithMultiplexer = ({
 
   return wSelectors;
 };
-
