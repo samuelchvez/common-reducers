@@ -2,7 +2,7 @@
 import byId from './byId';
 import counter from './counter';
 import error from './error';
-import errors  from './errors ';
+import errors  from './errors';
 import fetching from './fetching';
 import isFetching from './isFetching';
 import keyExtractor from './keyExtractor';
