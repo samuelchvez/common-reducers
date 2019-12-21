@@ -1,9 +1,5 @@
 // @flow
-import {
-  ERROR_TYPE,
-  ErrorsActionType,
-  
-} from './types';
+import type { ID_TYPE, ERROR_TYPE } from './types';
 
 
 type ErrorsConfigurationType = {
