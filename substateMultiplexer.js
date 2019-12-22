@@ -71,6 +71,23 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     state: SubstateMultiplexerStateType = initialState,
     action: SubstateMultiplexerActionType,
   ): SubstateMultiplexerStateType => {
+    // Noop
+    if(
+      ![
+        ...configuration.added,
+        ...configuration.allDeselected,
+        ...configuration.cleared,
+        ...configuration.confirmed,
+        ...configuration.fetched,
+        ...configuration.removed,
+        ...configuration.replaced,
+        ...configuration.selected,
+        ...configuration.sorted,
+      ].includes(action.type)
+    ) {
+      return state;
+    }
+
     const { substates } = state;
     const byIdOrderAndSelected = byIdOrderAndSelectedReducer(
       {
