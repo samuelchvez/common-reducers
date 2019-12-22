@@ -3,7 +3,9 @@ import { combineReducers } from 'redux';
 
 import type { ID_TYPE } from './types';
 import type { OrderActionType } from './order';
-import * as common from '.';
+import commonById from './byId';
+import commonOrder from './order';
+import commonSelected from './selected';
 
 
 type SubstateMultiplexerConfigurationType = {
@@ -40,14 +42,14 @@ const initialState = {
 
 const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType) => {
   const byIdOrderAndSelectedReducer = combineReducers({
-    byId: common.byId({
+    byId: commonById({
       added: configuration.added,
       fetched: configuration.fetched,
       removed: configuration.removed,
       cleared: configuration.cleared,
       idKey: configuration.idKey,
     }),
-    order: common.order({
+    order: commonOrder({
       added: configuration.added,
       fetched: configuration.fetched,
       replaced: configuration.replaced,
@@ -58,7 +60,7 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
       idKey: configuration.idKey,
       preferPrepend: configuration.preferPrepend,
     }),
-    selected: common.selected({
+    selected: commonSelected({
       selected: configuration.selected,
       allDeselected: configuration.allDeselected,
       default: null,
