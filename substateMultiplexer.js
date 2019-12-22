@@ -72,7 +72,7 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     action: SubstateMultiplexerActionType,
   ): SubstateMultiplexerStateType => {
     // Noop
-    if(
+    if (
       ![
         ...(configuration.added || []),
         ...(configuration.allDeselected || []),
