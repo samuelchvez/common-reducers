@@ -72,8 +72,14 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     action: SubstateMultiplexerActionType,
   ): SubstateMultiplexerStateType => {
     const { substates } = state;
-    // $FlowFixMe
-    const byIdOrderAndSelected = byIdOrderAndSelectedReducer(state, action);
+    const byIdOrderAndSelected = byIdOrderAndSelectedReducer(
+      {
+        byId: state.byId,
+        order: state.order,
+        selected: state.selected,
+      },
+      action,
+    );
     const { byId, order } = byIdOrderAndSelected;
     let { selected } = byIdOrderAndSelected;
 
