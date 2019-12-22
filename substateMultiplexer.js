@@ -74,15 +74,15 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     // Noop
     if(
       ![
-        ...configuration.added,
-        ...configuration.allDeselected,
-        ...configuration.cleared,
-        ...configuration.confirmed,
-        ...configuration.fetched,
-        ...configuration.removed,
-        ...configuration.replaced,
-        ...configuration.selected,
-        ...configuration.sorted,
+        ...(configuration.added || []),
+        ...(configuration.allDeselected || []),
+        ...(configuration.cleared || []),
+        ...(configuration.confirmed || []),
+        ...(configuration.fetched || []),
+        ...(configuration.removed || []),
+        ...(configuration.replaced || []),
+        ...(configuration.selected || []),
+        ...(configuration.sorted || []),
       ].includes(action.type)
     ) {
       return state;
