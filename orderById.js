@@ -1,5 +1,5 @@
 // @flow
-import { ID_TYPE } from './types';
+import type { ID_TYPE } from './types';
 
 
 type OrderByIdConfigurationType = {
@@ -29,8 +29,8 @@ const orderById = (configuration: OrderByIdConfigurationType) => (
 
   const { payload } = action;
 
-  if(fetched != null && fetched.includes(action.type)) {
-    let order = payload[orderKey];
+  if (fetched != null && fetched.includes(action.type)) {
+    const order = payload[orderKey];
     if (order && order.constructor === Array) {
       const objectId = payload[idKey];
       const originalOrder = state[objectId] || [];
@@ -41,12 +41,15 @@ const orderById = (configuration: OrderByIdConfigurationType) => (
 
       return {
         ...state,
-        [objectId]: [ ...originalOrder, ...difference ],
+        [objectId]: [
+          ...originalOrder,
+          ...difference,
+        ],
       };
     }
   }
 
-  if(replaced != null && replaced.includes(action.type)) {
+  if (replaced != null && replaced.includes(action.type)) {
     const order = payload[orderKey];
 
     if (order && order.constructor === Array) {
