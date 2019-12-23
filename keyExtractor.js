@@ -1,10 +1,9 @@
 // @flow
-
 type KeyExtractorConfigurationType = {
   clear?: Array<string>,
   set?: Array<string>,
   extractionKey: string,
-  default: number,
+  default: mixed,
 };
 
 type KeyExtractorActionType = {
@@ -13,9 +12,9 @@ type KeyExtractorActionType = {
 };
 
 const keyExtractor = (configuration: KeyExtractorConfigurationType) => (
-  state: number = configuration.default,
+  state: mixed = configuration.default,
   action: KeyExtractorActionType,
-): number => {
+): mixed => {
   const {
     clear,
     set,

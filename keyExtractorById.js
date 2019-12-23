@@ -1,5 +1,4 @@
 // @flow
-
 type KeyExtractorByIdConfigurationType = {
   clear?: Array<string>,
   set?: Array<string>,
