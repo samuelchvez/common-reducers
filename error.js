@@ -1,5 +1,5 @@
 // @flow
-import {
+import type {
   ERROR_TYPE,
   MAYBE_ERROR_TYPE,
 } from './types';
