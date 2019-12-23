@@ -1,7 +1,4 @@
 // @flow
-import type { ID_TYPE } from './types';
-
-
 type IsFetchingConfigurationType = {
   started?: Array<string>,
   succeed?: Array<string>,
