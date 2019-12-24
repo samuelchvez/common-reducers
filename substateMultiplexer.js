@@ -19,6 +19,7 @@ type SubstateMultiplexerConfigurationType = {
   preferPrepend?: boolean,
   allDeselected?: Array<string>,
   selected?: Array<string>,
+  rehydrated?: Array<string>,
   idKey?: string,
   reducer: Function,
 }
@@ -71,20 +72,8 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     state: SubstateMultiplexerStateType = initialState,
     action: SubstateMultiplexerActionType,
   ): SubstateMultiplexerStateType => {
-    // Noop
-    if (
-      ![
-        ...(configuration.added || []),
-        ...(configuration.allDeselected || []),
-        ...(configuration.cleared || []),
-        ...(configuration.confirmed || []),
-        ...(configuration.fetched || []),
-        ...(configuration.removed || []),
-        ...(configuration.replaced || []),
-        ...(configuration.selected || []),
-        ...(configuration.sorted || []),
-      ].includes(action.type)
-    ) {
+    // Initial run of the reducer needs to return the reference to the initial state
+    if (configuration.rehydrated && configuration.rehydrated.includes(action.type)) {
       return state;
     }
 
