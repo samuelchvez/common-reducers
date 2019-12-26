@@ -1,9 +1,9 @@
 // @flow
 
 type SingletonConfigurationType = {
-  clear: Array<string>,
-  populate: Array<string>,
-  update: Array<string>,
+  clear?: Array<string>,
+  populate?: Array<string>,
+  update?: Array<string>,
 };
 
 type SingletonActionType = {

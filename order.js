@@ -95,7 +95,8 @@ const order = (configuration: OrderConfigurationType) => (
     if (
       typeof payload === 'object'
       && payload.order != null
-      && payload.order.constructor === Array) {
+      && payload.order.constructor === Array
+    ) {
       const stateSet = new Set(state);
       const difference = payload.order.filter(
         id => !stateSet.has(id),

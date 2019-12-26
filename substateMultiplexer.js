@@ -78,6 +78,7 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
     }
 
     const { substates } = state;
+    const newSubstates = { ...substates };
     const byIdOrderAndSelected = byIdOrderAndSelectedReducer(
       {
         byId: state.byId,
@@ -99,6 +100,14 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
       && selected === null
     ) {
       selected = order[0]; // eslint-disable-line prefer-destructuring
+    }
+
+    // Remove substate
+    if (configuration.removed && configuration.removed.includes(action.type)) {
+      const { payload } = action;
+      if (typeof payload === 'number' || typeof payload === 'string') {
+        delete newSubstates[payload];
+      }
     }
 
     // Re-select if removed the one that is currently selected

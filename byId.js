@@ -158,6 +158,7 @@ const byId = (configuration: ByIdConfigurationType) => (
 
     if (removed != null && removed.includes(action.type)) {
       // TODO: handle payload object with id attribute
+      // TODO: handle payload array
       if (
         typeof payload === 'number'
         || typeof payload === 'string'
