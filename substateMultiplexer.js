@@ -132,9 +132,9 @@ const substateMultiplexer = (configuration: SubstateMultiplexerConfigurationType
       order,
       selected,
       substates: selected != null ? {
-        ...substates,
-        [selected]: configuration.reducer(substates[selected], action),
-      } : substates,
+        ...newSubstates,
+        [selected]: configuration.reducer(newSubstates[selected], action),
+      } : newSubstates,
     };
   };
 };
