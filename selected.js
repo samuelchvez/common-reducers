@@ -1,5 +1,5 @@
 // @flow
-import { ID_TYPE, GENERIC_ACTION_TYPE } from './types';
+import type { ID_TYPE, GENERIC_ACTION_TYPE } from './types';
 
 
 export type SelectedConfigurationType = {

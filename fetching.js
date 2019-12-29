@@ -1,5 +1,5 @@
 // @flow
-import { ID_TYPE } from './types';
+import type { ID_TYPE } from './types';
 
 
 type FetchingConfigurationType = {
