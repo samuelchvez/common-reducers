@@ -3,6 +3,7 @@ type KeyExtractorConfigurationType = {
   clear?: Array<string>,
   set?: Array<string>,
   extractionKey: string,
+  transform?: Function,
   default: mixed,
 };
 
@@ -19,13 +20,14 @@ const keyExtractor = (configuration: KeyExtractorConfigurationType) => (
     clear,
     set,
     extractionKey,
+    transform = _ => _,
   } = configuration;
   if (clear != null && clear.includes(action.type)) {
-    return configuration.default;
+    return transform(configuration.default);
   }
 
   if (set != null && set.includes(action.type)) {
-    return action.payload[extractionKey];
+    return transform(action.payload[extractionKey]);
   }
 
   return state;
