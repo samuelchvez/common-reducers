@@ -13,5 +13,5 @@ export type MAYBE_ERROR_TYPE = {} | ERROR_TYPE;
 
 export type GENERIC_ACTION_TYPE = {
   type: string,
-  payload?: Object,
+  payload?: mixed,
 };
