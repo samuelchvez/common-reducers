@@ -23,7 +23,7 @@ const keyExtractor = (configuration: KeyExtractorConfigurationType) => (
     transform = _ => _,
   } = configuration;
   if (clear != null && clear.includes(action.type)) {
-    return transform(configuration.default);
+    return configuration.default;
   }
 
   if (set != null && set.includes(action.type)) {
