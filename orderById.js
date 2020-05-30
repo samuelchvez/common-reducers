@@ -7,6 +7,7 @@ type OrderByIdConfigurationType = {
   replaced?: Array<string>,
   added?: Array<string>,
   removed?: Array<string>,
+  changed?: Array<string>,
   elementChanged?: Array<string>,
   idKey?: string,
   orderKey?: string,
@@ -28,6 +29,9 @@ const orderById = (configuration: OrderByIdConfigurationType) => (
   const {
     fetched,
     replaced,
+    added,
+    removed,
+    changed,
     idKey = 'id',
     orderKey = 'order',
     elementKey = 'element',
