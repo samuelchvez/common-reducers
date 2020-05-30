@@ -169,6 +169,14 @@ const byId = (configuration: ByIdConfigurationType) => (
 
         delete newState[payload];
         return newState;
+      } else if(typeof payload === 'object') {
+        const { id } = payload;
+        const newState = {
+          ...state,
+        };
+
+        delete newState[id];
+        return newState;
       }
     }
 
