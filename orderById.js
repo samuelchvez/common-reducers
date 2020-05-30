@@ -5,8 +5,13 @@ import type { ID_TYPE } from './types';
 type OrderByIdConfigurationType = {
   fetched?: Array<string>,
   replaced?: Array<string>,
+  added?: Array<string>,
+  removed?: Array<string>,
+  elementChanged?: Array<string>,
   idKey?: string,
   orderKey?: string,
+  elementKey?: string,
+  newElementKey?: string,
 };
 
 type OrderByIdActionType = {
@@ -25,6 +30,8 @@ const orderById = (configuration: OrderByIdConfigurationType) => (
     replaced,
     idKey = 'id',
     orderKey = 'order',
+    elementKey = 'element',
+    newElementKey = 'newElement',
   } = configuration;
 
   const { payload } = action;
@@ -49,6 +56,35 @@ const orderById = (configuration: OrderByIdConfigurationType) => (
     }
   }
 
+  if (added != null && added.includes(action.type)) {
+    const objectId = payload[idKey];
+    const toAdd = payload[elementKey];
+    if (state[objectId] && !state[objectId].includes(toAdd)) {
+      const originalOrder = state[objectId];
+
+      return {
+        ...state,
+        [objectId]: [
+          ...originalOrder,
+          toAdd,
+        ],
+      };
+    }
+  }
+
+  if (removed != null && removed.includes(action.type)) {
+    const objectId = payload[idKey];
+    const toRemove = payload[elementKey];
+    if (state[objectId] && state[objectId].includes(toRemove)) {
+      const originalOrder = state[objectId];
+
+      return {
+        ...state,
+        [objectId]: originalOrder.filter(i => i !== toRemove),
+      };
+    }
+  }
+
   if (replaced != null && replaced.includes(action.type)) {
     const order = payload[orderKey];
 
@@ -57,6 +93,21 @@ const orderById = (configuration: OrderByIdConfigurationType) => (
       return {
         ...state,
         [objectId]: order,
+      };
+    }
+  }
+
+  if (changed != null && changed.includes(action.type)) {
+    const objectId = payload[idKey];
+    const toChange = payload[elementKey];
+    const newValue = payload[newElementKey];
+
+    if (state[objectId]) {
+      const originalOrder = state[objectId];
+
+      return {
+        ...state,
+        [objectId]: originalOrder.map(i => i === toChange ? newValue : i),
       };
     }
   }
