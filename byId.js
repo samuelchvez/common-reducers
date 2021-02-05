@@ -143,7 +143,7 @@ const byId = (configuration: ByIdConfigurationType) => (
           newEntities[id] = {
             ...(defaultAttributes || {}),
             ...(payload.entities || {})[
-              Number.isNaN(parseInt(id)) ? id : parseInt(id, 10)
+              isNaN(id) ? id : parseInt(id, 10)
             ],
             isConfirmed: true,
           };
